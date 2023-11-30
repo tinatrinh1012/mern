@@ -9,8 +9,6 @@ module.exports = {
 		try {
 			await client.connect();
 			console.log("Successfully connected to MongoDB");
-
-			_db = client.db("gettingStarted");
 		} catch (err) {
 			console.log(err.stack);
 		} finally {
@@ -18,7 +16,8 @@ module.exports = {
 		}
 	},
 
-	getDb: function () {
+	getDb: function (dbName) {
+		_db = client.db(dbName);
 		return _db;
 	},
 };
