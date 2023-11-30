@@ -9,10 +9,12 @@ module.exports = {
 		try {
 			await client.connect();
 			console.log("Successfully connected to MongoDB");
+
+			_db = client.db("gettingStarted");
 		} catch (err) {
-				console.log(err.stack);
+			console.log(err.stack);
 		} finally {
-				await client.close();
+			await client.close();
 		}
 	},
 
