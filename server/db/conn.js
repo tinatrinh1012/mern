@@ -11,8 +11,6 @@ module.exports = {
 			console.log("Successfully connected to MongoDB");
 		} catch (err) {
 			console.log(err.stack);
-		} finally {
-			await client.close();
 		}
 	},
 
