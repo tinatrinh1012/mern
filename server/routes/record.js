@@ -21,7 +21,7 @@ recordRoutes.route("/record").get(async function (req, res) {
         let records = await cursor.toArray();
         res.status(200).json(records);
     } catch (err) {
-        res.status(404).json("Error finding employee records");
+        res.status(400).json("Error finding employee records");
     }
 });
 
@@ -37,19 +37,22 @@ recordRoutes.route("/record").get(async function (req, res) {
 //     });
 // });
 
-// // This section will help you create a new record.
-// recordRoutes.route("/record/add").post(function (req, response) {
-//     let db_connect = dbo.getDb();
-//     let myobj = {
-//         name: req.body.name,
-//         position: req.body.position,
-//         level: req.body.level,
-//     };
-//     db_connect.collection("records").insertOne(myobj, function (err, res) {
-//         if (err) throw err;
-//         response.json(res);
-//     });
-// });
+// This section will help you create a new record.
+recordRoutes.route("/record/add").post(async function (req, response) {
+    try {
+        let database = dbo.getDb("employees");
+        let collection = database.collection("records");
+        let newEmployee = {
+            name: req.body.name,
+            position: req.body.position,
+            level: req.body.level,
+        };
+        let result = await collection.insertOne(newEmployee);
+        response.status(200).json(result)
+    } catch(err) {
+        response.status(400).json("Error creating new employee");
+    }
+});
 
 // // This section will help you update a record by id.
 // recordRoutes.route("/update/:id").post(function (req, response) {
