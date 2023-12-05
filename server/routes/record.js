@@ -41,7 +41,7 @@ recordRoutes.route("/record/:id").get(async function (req, res) {
 });
 
 // This section will help you create a new record.
-recordRoutes.route("/record/add").post(async function (req, response) {
+recordRoutes.route("/record/add").post(async function (req, res) {
     try {
         let database = db.getDb("employees");
         let collection = database.collection("records");
@@ -51,14 +51,14 @@ recordRoutes.route("/record/add").post(async function (req, response) {
             level: req.body.level,
         };
         let result = await collection.insertOne(newEmployee);
-        response.status(200).json(result);
+        res.status(200).json(result);
     } catch(err) {
-        response.status(400).json("Error creating new employee");
+        res.status(400).json("Error creating new employee");
     }
 });
 
 // This section will help you update a record by id.
-recordRoutes.route("/update/:id").post(async function (req, response) {
+recordRoutes.route("/update/:id").post(async function (req, res) {
     try {
         let database = db.getDb("employees");
         let collection = database.collection("records");
@@ -70,22 +70,26 @@ recordRoutes.route("/update/:id").post(async function (req, response) {
         };
 
         let result = await collection.updateOne(filter, { $set: updateValues });
-        response.status(200).json(result);
+        res.status(200).json(result);
     } catch (error) {
         console.log(error);
-        response.status(400).json("Error updating employee");
+        res.status(400).json("Error updating employee");
     }
 });
 
-// // This section will help you delete a record
-// recordRoutes.route("/:id").delete((req, response) => {
-//     let db_connect = dbo.getDb();
-//     let myquery = { _id: ObjectId(req.params.id) };
-//     db_connect.collection("records").deleteOne(myquery, function (err, obj) {
-//         if (err) throw err;
-//         console.log("1 document deleted");
-//         response.json(obj);
-//     });
-// });
+// This section will help you delete a record
+recordRoutes.route("/:id").delete(async (req, res) => {
+    try {
+        let database = db.getDb("employees");
+        let collection = database.collection("records");
+        let filter = { _id: new ObjectId(req.params.id) };
+
+        let result = await collection.deleteOne(filter);
+        res.status(200).json(result);
+    } catch (error) {
+        console.log(error);
+        res.status(400).json("Error deleting employee");
+    }
+});
 
 module.exports = recordRoutes;
