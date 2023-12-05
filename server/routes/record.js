@@ -6,7 +6,7 @@ const express = require("express");
 const recordRoutes = express.Router();
 
 // This will help us connect to the database
-const dbo = require("../db/conn");
+const db = require("../db/conn");
 
 // This help convert the id from string to ObjectId for the _id.
 const ObjectId = require("mongodb").ObjectId;
@@ -15,7 +15,7 @@ const ObjectId = require("mongodb").ObjectId;
 // This section will help you get a list of all the records.
 recordRoutes.route("/record").get(async function (req, res) {
     try {
-        let database = dbo.getDb("employees");
+        let database = db.getDb("employees");
         let collection = database.collection("records");
         let cursor = collection.find({});
         let records = await cursor.toArray();
@@ -25,22 +25,25 @@ recordRoutes.route("/record").get(async function (req, res) {
     }
 });
 
-// // This section will help you get a single record by id
-// recordRoutes.route("/record/:id").get(function (req, res) {
-//     let db_connect = dbo.getDb();
-//     let myquery = { _id: ObjectId(req.params.id) };
-//     db_connect
-//     .collection("records")
-//     .findOne(myquery, function (err, result) {
-//         if (err) throw err;
-//         res.json(result);
-//     });
-// });
+// This section will help you get a single record by id
+recordRoutes.route("/record/:id").get(async function (req, res) {
+    try {
+        let database = db.getDb("employees");
+        let collection = database.collection("records");
+        let filter = { _id: new ObjectId(req.params.id) }
+
+        let result = await collection.findOne(filter);
+        res.status(200).json(result);
+    } catch (error) {
+        console.log(error);
+        res.status(400).json("Error finding record");
+    }
+});
 
 // This section will help you create a new record.
 recordRoutes.route("/record/add").post(async function (req, response) {
     try {
-        let database = dbo.getDb("employees");
+        let database = db.getDb("employees");
         let collection = database.collection("records");
         let newEmployee = {
             name: req.body.name,
@@ -48,31 +51,31 @@ recordRoutes.route("/record/add").post(async function (req, response) {
             level: req.body.level,
         };
         let result = await collection.insertOne(newEmployee);
-        response.status(200).json(result)
+        response.status(200).json(result);
     } catch(err) {
         response.status(400).json("Error creating new employee");
     }
 });
 
-// // This section will help you update a record by id.
-// recordRoutes.route("/update/:id").post(function (req, response) {
-//     let db_connect = dbo.getDb();
-//     let myquery = { _id: ObjectId(req.params.id) };
-//     let newvalues = {
-//     $set: {
-//         name: req.body.name,
-//         position: req.body.position,
-//         level: req.body.level,
-//     },
-//     };
-//     db_connect
-//     .collection("records")
-//     .updateOne(myquery, newvalues, function (err, res) {
-//         if (err) throw err;
-//         console.log("1 document updated");
-//         response.json(res);
-//     });
-// });
+// This section will help you update a record by id.
+recordRoutes.route("/update/:id").post(async function (req, response) {
+    try {
+        let database = db.getDb("employees");
+        let collection = database.collection("records");
+        let filter = { _id: new ObjectId(req.params.id) }; // mongodb id is ObjectId BSON type
+        let updateValues = {
+            name: req.body.name,
+            position: req.body.position,
+            level: req.body.level,
+        };
+
+        let result = await collection.updateOne(filter, { $set: updateValues });
+        response.status(200).json(result);
+    } catch (error) {
+        console.log(error);
+        response.status(400).json("Error updating employee");
+    }
+});
 
 // // This section will help you delete a record
 // recordRoutes.route("/:id").delete((req, response) => {
