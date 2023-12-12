@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { BASE_URL } from "../App";
 
 const Record = (props) => (
 	<tr>
@@ -27,7 +28,7 @@ export default function RecordList() {
 	}, [])
 
 	function getEmployeeRecords() {
-		fetch('http://localhost:8080/record/')
+		fetch(`${BASE_URL}/record/`)
 		.then(response => response.json())
 		.then(data => setRecords(data))
 		.catch(error => console.error('Error:', error));
@@ -35,7 +36,7 @@ export default function RecordList() {
 
 	// This method will delete a record
 	function deleteRecord(id) {
-		fetch(`http://localhost:8080/${id}`, {method: "DELETE"})
+		fetch(`${BASE_URL}/${id}`, { method: "DELETE" })
 		.then(_ => getEmployeeRecords())
 		.catch(error => console.error('Error:', error));
 	}

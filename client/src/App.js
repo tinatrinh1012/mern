@@ -8,6 +8,8 @@ import RecordList from "./components/recordList";
 import Edit from "./components/edit";
 import Create from "./components/create";
 
+export const BASE_URL = "https://mern-server-at7j.onrender.com";
+
 const App = () => {
 	return (
 		<div>

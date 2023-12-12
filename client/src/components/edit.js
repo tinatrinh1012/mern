@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
+import { BASE_URL } from "../App";
 
 export default function Edit() {
 	const [form, setForm] = useState({
@@ -11,8 +12,9 @@ export default function Edit() {
 	const params = useParams();
 	const navigate = useNavigate();
 
+	// first request info for a single employee record
 	useEffect(() => {
-		fetch(`http://localhost:8080/record/${params.id}`)
+		fetch(`${BASE_URL}/record/${params.id}`)
 		.then((response) => {
 			if (response.ok) {
 				return response.json();
@@ -43,7 +45,7 @@ export default function Edit() {
 		};
 
 		// This will send a post request to update the data in the database.
-		fetch(`http://localhost:8080/update/${params.id}`, {
+		fetch(`${BASE_URL}/update/${params.id}`, {
 			method: "POST",
 			body: JSON.stringify(editedRecord),
 			headers: {

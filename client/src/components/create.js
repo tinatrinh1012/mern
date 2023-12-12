@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
+import { BASE_URL } from "../App";
 
 export default function Create() {
 	const [form, setForm] = useState({
@@ -20,7 +21,7 @@ export default function Create() {
 		e.preventDefault();
 		// When a post request is sent to the create url, we'll add a new record to the database.
 		const newPerson = { ...form };
-		await fetch("http://localhost:8080/record/add", {
+		await fetch(`${BASE_URL}/record/add`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
